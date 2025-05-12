@@ -1,0 +1,19 @@
+<div class="chat-container">
+    <header class="chat-header">AI Chat</header>
+  
+    <div class="chat-messages" #chatContainer>
+      <div *ngFor="let msg of messages" [ngClass]="msg.sender">
+        <div class="message">{{ msg.text }}</div>
+      </div>
+    </div>
+  
+    <form class="chat-input" (submit)="sendMessage()">
+      <input
+        [(ngModel)]="newMessage"
+        name="message"
+        placeholder="Type your message..."
+        required
+      />
+      <button type="submit">Send</button>
+    </form>
+</div>
