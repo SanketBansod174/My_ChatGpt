@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+/* Ensure no extra margins or paddings on the html and body */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent the outer scrollbar */
+  height: 100%; /* Ensure the body takes up the full viewport height */
+}

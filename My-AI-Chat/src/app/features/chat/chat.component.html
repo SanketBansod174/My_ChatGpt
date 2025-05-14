@@ -1,19 +1,31 @@
 <div class="chat-container">
-    <header class="chat-header">AI Chat</header>
-  
-    <div class="chat-messages" #chatContainer>
-      <div *ngFor="let msg of messages" [ngClass]="msg.sender">
-        <div class="message">{{ msg.text }}</div>
+  <header class="chat-header">AI Chat
+    <div class="menu-container">
+      <button class="menu-button" (click)="toggleMenu()">⋮</button>
+      <div class="menu-dropdown" *ngIf="menuOpen">
+        <button (click)="clearChat()">Clear Chat</button>
+        <!-- Future options go here -->
       </div>
     </div>
-  
-    <form class="chat-input" (submit)="sendMessage()">
-      <input
-        [(ngModel)]="newMessage"
-        name="message"
-        placeholder="Type your message..."
-        required
-      />
-      <button type="submit">Send</button>
-    </form>
+
+    <select [(ngModel)]="selectedModel" (change)="changeModel()">
+      <option *ngFor="let model of availableModels" [value]="model.id">
+        {{ model.name }}
+      </option>
+    </select>
+  </header>
+
+  <div class="chat-messages" #chatContainer>
+    <div *ngFor="let msg of messages" [ngClass]="msg.sender">
+      <div class="message">{{ msg.text }}</div>
+    </div>
+  </div>
+
+  <form class="chat-input" (submit)="sendMessage()">
+    <input [(ngModel)]="newMessage" name="message" placeholder="Type your message..." required />
+    <button type="submit">Send</button>
+  </form>
 </div>
+<app-confirm-dialog *ngIf="showConfirmDialog" [message]="'Do you really want to clear all messages?'"
+  (confirmed)="handleConfirmation($event)">
+</app-confirm-dialog>
