@@ -112,3 +112,9 @@ select {
   font-size: 0.9rem;
   border-radius: 5px;
 }
+
+.loading-indicator {
+  font-style: italic;
+  color: #555;
+  padding: 0.5rem;
+}

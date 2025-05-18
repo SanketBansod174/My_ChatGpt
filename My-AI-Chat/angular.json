@@ -62,7 +62,8 @@
               "buildTarget": "My-AI-Chat:build:production"
             },
             "development": {
-              "buildTarget": "My-AI-Chat:build:development"
+              "buildTarget": "My-AI-Chat:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

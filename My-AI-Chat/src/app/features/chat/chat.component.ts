@@ -19,17 +19,25 @@ export class ChatComponent implements AfterViewChecked {
   menuOpen = false;
   showConfirmDialog = false;
   chatservice: any;
+  availableModels: any[] = [];
+  selectedModel: string = '';
+  isLoading = false;
+
+
+  changeModel() {
+    this.chatService.setModel(this.selectedModel);
+  }
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
 
-  constructor(private chatService: ChatService) {
-    this.chatService = chatService;
-  }
+  constructor(private chatService: ChatService) { }
 
   ngOnInit() {
     this.messages = this.chatService.getMessages();
+    this.availableModels = this.chatService.getModels();
+    this.selectedModel = this.chatService.getSelectedModel();
   }
 
   ngAfterViewChecked(): void {
@@ -39,18 +47,27 @@ export class ChatComponent implements AfterViewChecked {
     }
   }
 
-  sendMessage() {
+  async sendMessage() {
     if (!this.newMessage.trim()) return;
 
     const userInput = this.newMessage;
     this.newMessage = '';
     this.chatService.addUserMessage(userInput);
+    this.messages = this.chatService.getMessages();
+    this.isLoading = true;
 
-    setTimeout(() => {
-      this.chatService.addAiMessage(`You said: "${userInput}". This is a mock response.`);
-      this.messages = this.chatService.getMessages(); // Refresh
-    }, 1000);
+    try {
+      const aiReply = await this.chatService.sendToOllama(userInput);
+      this.chatService.addAiMessage(aiReply);
+    } catch (error) {
+      this.chatService.addAiMessage("⚠️ Failed to connect to model. Is Ollama running?");
+      console.error(error);
+    }
+
+    this.messages = this.chatService.getMessages();
+    this.isLoading = false;
   }
+
 
   private scrollToBottom() {
     if (!this.messagesContainer) {
@@ -79,14 +96,6 @@ export class ChatComponent implements AfterViewChecked {
       this.chatService.clearMessages();
       this.messages = this.chatService.getMessages();
     }
-  }
-
-
-  availableModels = this.chatService.getModels();
-  selectedModel = this.chatService.getSelectedModel();
-
-  changeModel() {
-    this.chatService.setModel(this.selectedModel);
   }
 
 }

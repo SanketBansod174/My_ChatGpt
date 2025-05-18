@@ -7,10 +7,10 @@ export class ChatService {
   models = [
     { id: 'deepseek-coder:14b', name: 'DeepSeek R1 14B' },
     { id: 'deepseek-coder:8b', name: 'DeepSeek R1 8B' },
-    { id: 'deepcoder:14b', name: 'DeepCoder 14B' },
+    { id: 'deepcoder:latest', name: 'DeepCoder' },
     { id: 'codellama:7b', name: 'CodeLlama 7B' }
   ];
-
+  private readonly apiUrl = '/api/api/generate'; // First /api is the proxy path
   private readonly MODEL_KEY = 'selected_model';
   selectedModelId: string = this.models[0].id;
 
@@ -18,6 +18,7 @@ export class ChatService {
   messages: { sender: 'user' | 'ai', text: string }[] = [
     { sender: 'ai', text: 'Hello! How can I help you today?' }
   ];
+
 
   constructor() {
     this.loadModel();
@@ -75,4 +76,36 @@ export class ChatService {
       this.selectedModelId = stored;
     }
   }
+
+  async sendToOllama(userInput: string): Promise<string> {
+    const model = this.getSelectedModel();
+
+    const payload = {
+      model,
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        ...this.messages.map(m => ({
+          role: m.sender === 'user' ? 'user' : 'assistant',
+          content: m.text
+        })),
+        { role: 'user', content: userInput }
+      ],
+      stream: false // no streaming for now
+    };
+
+    const response = await fetch('http://localhost:11434/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Ollama error: ${err}`);
+    }
+
+    const data = await response.json();
+    return data.message.content;
+  }
+
 }
