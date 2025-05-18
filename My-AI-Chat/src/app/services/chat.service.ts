@@ -77,35 +77,12 @@ export class ChatService {
     }
   }
 
-  async sendToOllama(userInput: string): Promise<string> {
-    const model = this.getSelectedModel();
-
-    const payload = {
-      model,
-      messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
-        ...this.messages.map(m => ({
-          role: m.sender === 'user' ? 'user' : 'assistant',
-          content: m.text
-        })),
-        { role: 'user', content: userInput }
-      ],
-      stream: false // no streaming for now
-    };
-
-    const response = await fetch('http://localhost:11434/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`Ollama error: ${err}`);
+  updateLastAiMessage(content: string) {
+    const msgs = this.getMessages();
+    const lastIndex = msgs.length - 1;
+    if (lastIndex >= 0 && msgs[lastIndex].sender === 'ai') {
+      msgs[lastIndex].text = content;
+      this.saveMessages();
     }
-
-    const data = await response.json();
-    return data.message.content;
   }
-
 }

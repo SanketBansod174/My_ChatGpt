@@ -17,7 +17,7 @@
 
   <div class="chat-messages" #chatContainer>
     <div *ngFor="let msg of messages" [ngClass]="msg.sender">
-      <div class="message">{{ msg.text }}</div>
+      <div *ngIf="msg.text" class="message">{{ msg.text }}</div>
     </div>
     <div *ngIf="isLoading" class="loading-indicator">
       AI is thinking...

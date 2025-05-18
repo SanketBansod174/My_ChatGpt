@@ -3,6 +3,7 @@ import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogComponent } from "../../shared/confirm-dialog/confirm-dialog.component";
 import { ChatService } from '../../services/chat.service';
+import { OllamaService } from '../../services/ollama.service';
 
 @Component({
   selector: 'app-chat',
@@ -23,6 +24,7 @@ export class ChatComponent implements AfterViewChecked {
   selectedModel: string = '';
   isLoading = false;
 
+  constructor(private chatService: ChatService, private ollamaService: OllamaService) { }
 
   changeModel() {
     this.chatService.setModel(this.selectedModel);
@@ -31,8 +33,6 @@ export class ChatComponent implements AfterViewChecked {
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
-
-  constructor(private chatService: ChatService) { }
 
   ngOnInit() {
     this.messages = this.chatService.getMessages();
@@ -50,24 +50,41 @@ export class ChatComponent implements AfterViewChecked {
   async sendMessage() {
     if (!this.newMessage.trim()) return;
 
-    const userInput = this.newMessage;
+    const userInput = this.newMessage.trim();
     this.newMessage = '';
     this.chatService.addUserMessage(userInput);
     this.messages = this.chatService.getMessages();
     this.isLoading = true;
 
+    const history = [
+      { role: 'system', content: 'You are a helpful assistant.' },
+      ...this.messages.map(m => ({
+        role: m.sender === 'user' ? 'user' : 'assistant',
+        content: m.text
+      })),
+      { role: 'user', content: userInput }
+    ];
+
+    this.chatService.addAiMessage('');
+    this.messages = this.chatService.getMessages(); // ✅ Render empty AI placeholder
+
     try {
-      const aiReply = await this.chatService.sendToOllama(userInput);
-      this.chatService.addAiMessage(aiReply);
+      await this.ollamaService.streamChatResponse(
+        this.chatService.getSelectedModel(),
+        history,
+        (token: string) => {
+          const current = this.chatService.getMessages().at(-1)?.text || '';
+          this.chatService.updateLastAiMessage(current + token);
+          this.messages = this.chatService.getMessages(); // trigger UI update
+        }
+      );
     } catch (error) {
-      this.chatService.addAiMessage("⚠️ Failed to connect to model. Is Ollama running?");
+      this.chatService.updateLastAiMessage("⚠️ Streaming failed.");
       console.error(error);
     }
 
-    this.messages = this.chatService.getMessages();
     this.isLoading = false;
   }
-
 
   private scrollToBottom() {
     if (!this.messagesContainer) {
