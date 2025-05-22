@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDialogComponent } from "../../shared/confirm-dialog/confirm-dialog.component";
 import { ChatService } from '../../services/chat.service';
 import { OllamaService } from '../../services/ollama.service';
+import { MarkdownPipe } from '../../markdown.pipe';
 
 @Component({
   selector: 'app-chat',
-  imports: [CommonModule, FormsModule, ConfirmDialogComponent],
+  imports: [CommonModule, FormsModule, ConfirmDialogComponent, MarkdownPipe],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
