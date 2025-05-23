@@ -1,6 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { ConfirmDialogComponent } from "../../shared/confirm-dialog/confirm-dialog.component";
 import { ChatService } from '../../services/chat.service';
 import { OllamaService } from '../../services/ollama.service';
@@ -8,31 +19,42 @@ import { MarkdownPipe } from '../../markdown.pipe';
 
 @Component({
   selector: 'app-chat',
-  imports: [CommonModule, FormsModule, ConfirmDialogComponent, MarkdownPipe],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatToolbarModule,
+    MarkdownPipe
+  ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements AfterViewChecked {
   @ViewChild('chatContainer') private messagesContainer!: ElementRef;
   messages: { sender: 'user' | 'ai', text: string }[] = [];
-
   newMessage = '';
   private previousMessageCount = 0;
-  menuOpen = false;
-  showConfirmDialog = false;
-  chatservice: any;
   availableModels: any[] = [];
   selectedModel: string = '';
   isLoading = false;
 
-  constructor(private chatService: ChatService, private ollamaService: OllamaService) { }
-
+  constructor(
+    private chatService: ChatService,
+    private ollamaService: OllamaService,
+    private dialog: MatDialog
+  ) { }
   changeModel() {
     this.chatService.setModel(this.selectedModel);
-  }
-
-  toggleMenu() {
-    this.menuOpen = !this.menuOpen;
   }
 
   ngOnInit() {
@@ -105,15 +127,17 @@ export class ChatComponent implements AfterViewChecked {
   }
 
   clearChat() {
-    this.showConfirmDialog = true;
-  }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: 'Do you really want to clear all messages?' },
+      width: '300px'
+    });
 
-  handleConfirmation(confirmed: boolean) {
-    this.showConfirmDialog = false;
-    if (confirmed) {
-      this.chatService.clearMessages();
-      this.messages = this.chatService.getMessages();
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.chatService.clearMessages();
+        this.messages = this.chatService.getMessages();
+      }
+    });
   }
 
 }

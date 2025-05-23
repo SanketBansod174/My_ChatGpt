@@ -1,34 +1,46 @@
 <div class="chat-container">
-  <header class="chat-header">AI Chat
-    <div class="menu-container">
-      <button class="menu-button" (click)="toggleMenu()">⋮</button>
-      <div class="menu-dropdown" *ngIf="menuOpen">
-        <button (click)="clearChat()">Clear Chat</button>
-        <!-- Future options go here -->
-      </div>
-    </div>
+  <mat-toolbar color="primary" class="chat-header">
+    <span>AI Chat</span>
+    <span class="toolbar-spacer"></span>
 
-    <select [(ngModel)]="selectedModel" (change)="changeModel()">
-      <option *ngFor="let model of availableModels" [value]="model.id">
-        {{ model.name }}
-      </option>
-    </select>
-  </header>
+    <mat-form-field appearance="outline">
+      <mat-select [(ngModel)]="selectedModel" (selectionChange)="changeModel()">
+        <mat-option *ngFor="let model of availableModels" [value]="model.id">
+          {{ model.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="clearChat()">
+        <mat-icon>delete</mat-icon>
+        <span>Clear Chat</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
 
   <div class="chat-messages" #chatContainer>
-    <div *ngFor="let msg of messages" [ngClass]="msg.sender">
-      <div *ngIf="msg.text" class="message" [innerHTML]="msg.text | markdown"></div>
-    </div>
-    <div *ngIf="isLoading" class="loading-indicator">
-      AI is thinking...
-    </div>
+    <mat-card *ngFor="let msg of messages" [ngClass]="msg.sender" class="message-card">
+      <mat-card-content>
+        <div class="message-content" [innerHTML]="msg.text | markdown"></div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-progress-spinner *ngIf="isLoading" class="loading-indicator" mode="indeterminate" diameter="32">
+    </mat-progress-spinner>
   </div>
 
+  <mat-divider></mat-divider>
+
   <form class="chat-input" (submit)="sendMessage()">
-    <input [(ngModel)]="newMessage" name="message" placeholder="Type your message..." required />
-    <button type="submit">Send</button>
+    <mat-form-field appearance="outline" class="input-field">
+      <input matInput [(ngModel)]="newMessage" name="message" placeholder="Type your message..." required>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">
+      <mat-icon>send</mat-icon>
+    </button>
   </form>
 </div>
-<app-confirm-dialog *ngIf="showConfirmDialog" [message]="'Do you really want to clear all messages?'"
-  (confirmed)="handleConfirmation($event)">
-</app-confirm-dialog>
