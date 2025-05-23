@@ -6,3 +6,5 @@ html, body {
   overflow: hidden; /* Prevent the outer scrollbar */
   height: 100%; /* Ensure the body takes up the full viewport height */
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

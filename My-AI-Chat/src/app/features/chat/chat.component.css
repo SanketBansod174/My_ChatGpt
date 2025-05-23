@@ -12,6 +12,11 @@
   font-size: 1.2rem;
 }
 
+.chat-messages .user,
+.chat-messages .ai {
+  display: flex;
+}
+
 .chat-messages {
   flex: 1;
   padding: 1rem;
@@ -19,22 +24,44 @@
   background-color: #f5f5f5;
 }
 
+/* Make sender wrapper a flex container */
+.chat-messages .user,
+.chat-messages .ai {
+  display: flex;
+}
+
+/* USER Message */
 .chat-messages .user .message {
   background-color: #d1e7fd;
-  align-self: flex-end;
   text-align: right;
+  padding: 10px 15px;
+  margin: 5px 0;
+  border-radius: 10px;
+  width: fit-content;
+  max-width: 80%;
+  align-self: flex-end;
+  margin-left: auto;
+  /* 🔥 KEY: Push it to the right */
 }
 
+/* AI Message */
 .chat-messages .ai .message {
   background-color: #ffffff;
-  align-self: flex-start;
   text-align: left;
+  padding: 10px 15px;
+  margin: 5px 0;
+  border-radius: 10px;
+  max-width: 80%;
+  align-self: flex-start;
+  margin-right: auto;
+  /* Optional for symmetry */
 }
 
+/* Shared message styles */
 .message {
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 0;
-  border-radius: 10px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  /* preserves newlines if needed */
 }
 
 
