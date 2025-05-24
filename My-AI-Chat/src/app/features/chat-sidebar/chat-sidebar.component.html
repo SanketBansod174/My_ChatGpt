@@ -1,0 +1,12 @@
+<mat-sidenav-container class="sidebar-container">
+    <mat-sidenav mode="side" opened class="sidebar">
+        <h3>Sessions</h3>
+        <mat-nav-list>
+            <div *ngFor="let session of sessions" (click)="selectSession(session)">
+                <mat-list-item>
+                    {{ session.name }}
+                </mat-list-item>
+            </div>
+        </mat-nav-list>
+    </mat-sidenav>
+</mat-sidenav-container>
