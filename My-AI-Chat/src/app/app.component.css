@@ -15,3 +15,7 @@ app-chat-sidebar {
     display: flex;
     flex-direction: column;
 }
+
+.sidenav-container {
+    height: 100vh;
+}
