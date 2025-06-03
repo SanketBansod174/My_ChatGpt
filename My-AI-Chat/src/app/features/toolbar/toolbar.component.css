@@ -1,0 +1,69 @@
+/* Base toolbar styles */
+:host {
+    position: relative;
+    z-index: 2;
+}
+
+.chat-header {
+    height: 64px;
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+/* Material Select styling in toolbar */
+:host ::ng-deep .chat-header .mat-mdc-form-field {
+    width: 200px;
+    margin-right: 1rem;
+}
+
+:host ::ng-deep .chat-header .mat-mdc-text-field-wrapper {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+:host ::ng-deep .chat-header .mat-mdc-form-field-flex {
+    padding-top: 0 !important;
+}
+
+:host ::ng-deep .chat-header .mat-mdc-select-value,
+:host ::ng-deep .chat-header .mat-mdc-select-arrow {
+    color: white;
+}
+
+:host ::ng-deep .chat-header .mat-mdc-form-field-underline {
+    display: none;
+}
+
+.chat-header mat-form-field {
+    width: 200px;
+    margin: 0 1rem;
+    font-size: 14px;
+}
+
+/* Reduce form field height */
+:host ::ng-deep .chat-header .mat-mdc-form-field-infix {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    min-height: unset;
+}
+
+:host ::ng-deep .chat-header .mat-mdc-text-field-wrapper {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+:host ::ng-deep .chat-header .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+}
+
+
+/* Style for the select dropdown panel */
+::ng-deep .dense-select-panel {
+    font-size: 14px !important;
+}
+
+::ng-deep .dense-select-panel .mat-mdc-option {
+    min-height: 35px !important;
+    padding: 8px 16px;
+}
