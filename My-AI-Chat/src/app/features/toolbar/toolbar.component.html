@@ -1,9 +1,10 @@
 <mat-toolbar color="primary" class="chat-header">
     <span>AI Chat</span>
-    <span class="toolbar-spacer"></span> <mat-form-field appearance="outline" class="dense-select">
-        <mat-select [(ngModel)]="selectedModel" (selectionChange)="changeModel()" panelClass="dense-select-panel">
+    <span class="toolbar-spacer"></span>
+    <mat-form-field>
+        <mat-select [(ngModel)]="selectedModel" (selectionChange)="changeModel()" [disabled]="!availableModels.length">
             <mat-option *ngFor="let model of availableModels" [value]="model.id">
-                {{ model.name }}
+                {{model.name}}
             </mat-option>
         </mat-select>
     </mat-form-field>

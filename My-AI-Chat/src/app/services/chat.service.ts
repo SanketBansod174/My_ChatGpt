@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
+  private modelsSubject = new BehaviorSubject<any[]>([]);
+
   private http = inject(HttpClient);
 
   models: { id: string, name: string }[] = [];
@@ -31,6 +34,9 @@ export class ChatService {
             id: item.model,
             name: item.name
           }));
+
+          this.modelsSubject.next(this.models);
+
           /*
           console.log('Available models:', this.models);
           const storedModel = localStorage.getItem(this.MODEL_KEY);
@@ -80,7 +86,7 @@ export class ChatService {
   }
 
   getModels() {
-    return this.models;
+    return this.modelsSubject.asObservable();
   }
 
 

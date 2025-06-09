@@ -56,7 +56,6 @@ export class ChatComponent implements AfterViewChecked {
 
   ngOnInit() {
     this.messages = this.chatService.getMessages();
-    this.availableModels = this.chatService.getModels();
   }
 
   ngAfterViewChecked(): void {
