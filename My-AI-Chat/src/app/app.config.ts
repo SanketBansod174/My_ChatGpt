@@ -10,13 +10,15 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { routes } from './app.routes';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimations(), importProvidersFrom(MatCardModule, MatButtonModule, MatInputModule, MatToolbarModule, MatIconModule, MatMenuModule, MatSelectModule, MatProgressSpinnerModule)],
+  providers: [provideHttpClient(withFetch()),
+  provideZoneChangeDetection({ eventCoalescing: true }),
+  provideRouter(routes), provideAnimations(),
+  importProvidersFrom(MatCardModule, MatButtonModule, MatInputModule, MatToolbarModule, MatIconModule, MatMenuModule, MatSelectModule, MatProgressSpinnerModule)],
 };
 
-function provideanimation(): import("@angular/core").Provider | import("@angular/core").EnvironmentProviders {
-  throw new Error('Function not implemented.');
-}
+
 

@@ -53,14 +53,10 @@ export class ChatComponent implements AfterViewChecked {
     private ollamaService: OllamaService,
     private dialog: MatDialog
   ) { }
-  changeModel() {
-    this.chatService.setModel(this.selectedModel);
-  }
 
   ngOnInit() {
     this.messages = this.chatService.getMessages();
     this.availableModels = this.chatService.getModels();
-    this.selectedModel = this.chatService.getSelectedModel();
   }
 
   ngAfterViewChecked(): void {

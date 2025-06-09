@@ -47,7 +47,9 @@ export class ToolbarComponent {
   ngOnInit() {
     this.messages = this.chatService.getMessages();
     this.availableModels = this.chatService.getModels();
-    this.selectedModel = this.chatService.getSelectedModel();
+    this.selectedModel = this.availableModels[0]?.id || '';
+    // Uncomment the line below if you want to set the selected model from the chat service
+    //this.chatService.getSelectedModel();
   }
 
   changeModel() {

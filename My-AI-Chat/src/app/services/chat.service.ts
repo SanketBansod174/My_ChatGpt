@@ -1,18 +1,15 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-  models = [
-    { id: 'deepseek-coder:14b', name: 'DeepSeek R1 14B' },
-    { id: 'deepseek-coder:8b', name: 'DeepSeek R1 8B' },
-    { id: 'deepcoder:latest', name: 'DeepCoder' },
-    { id: 'codellama:7b', name: 'CodeLlama 7B' }
-  ];
-  private readonly apiUrl = '/api/api/generate'; // First /api is the proxy path
+  private http = inject(HttpClient);
+
+  models: { id: string, name: string }[] = [];
   private readonly MODEL_KEY = 'selected_model';
-  selectedModelId: string = this.models[0].id;
+  //selectedModelId: string = this.models[0].id;
 
   private readonly STORAGE_KEY = 'chat_history';
   messages: { sender: 'user' | 'ai', text: string }[] = [
@@ -21,9 +18,34 @@ export class ChatService {
 
 
   constructor() {
-    this.loadModel();
+    // this.loadModel();
     this.loadMessages();
+    this.fetchLocalOllamaModels();
   }
+
+  fetchLocalOllamaModels() {
+    this.http.get('http://localhost:11434/api/tags').subscribe({
+      next: (response: any) => {
+        if (response?.models) {
+          this.models = response.models.map((item: any) => ({
+            id: item.model,
+            name: item.name
+          }));
+          /*
+          console.log('Available models:', this.models);
+          const storedModel = localStorage.getItem(this.MODEL_KEY);
+          if (storedModel && this.models.some(m => m.id === storedModel)) {
+            this.selectedModelId = storedModel;
+          }
+            */
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching models:', error);
+      }
+    });
+  }
+
 
   getMessages() {
     return this.messages;
@@ -61,22 +83,28 @@ export class ChatService {
     return this.models;
   }
 
+
   setModel(modelId: string) {
+    /*
     this.selectedModelId = modelId;
     localStorage.setItem(this.MODEL_KEY, modelId);
+    */
   }
+
 
   getSelectedModel() {
-    return this.selectedModelId;
+    // return this.selectedModelId;
+    return '';
   }
 
-  private loadModel() {
-    const stored = localStorage.getItem(this.MODEL_KEY);
-    if (stored && this.models.some(m => m.id === stored)) {
-      this.selectedModelId = stored;
+  /*
+    private loadModel() {
+      const stored = localStorage.getItem(this.MODEL_KEY);
+      if (stored && this.models.some(m => m.id === stored)) {
+        this.selectedModelId = stored;
+      }
     }
-  }
-
+  */
   updateLastAiMessage(content: string) {
     const msgs = this.getMessages();
     const lastIndex = msgs.length - 1;

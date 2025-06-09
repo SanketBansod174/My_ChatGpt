@@ -6,6 +6,15 @@
 
 .chat-header {
     height: 64px;
+    background-color: #292828;
+    /* Dark gray color for modern look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-header span {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ffffff;
 }
 
 .toolbar-spacer {
@@ -20,21 +29,29 @@
 
 :host ::ng-deep .chat-header .mat-mdc-text-field-wrapper {
     background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+:host ::ng-deep .chat-header .mat-mdc-text-field-wrapper:hover {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 :host ::ng-deep .chat-header .mat-mdc-form-field-flex {
     padding-top: 0 !important;
+    height: 40px;
 }
 
 :host ::ng-deep .chat-header .mat-mdc-select-value,
 :host ::ng-deep .chat-header .mat-mdc-select-arrow {
-    color: white;
+    color: #ffffff;
 }
 
 :host ::ng-deep .chat-header .mat-mdc-form-field-underline {
     display: none;
 }
 
+/* Dropdown select styling */
 .chat-header mat-form-field {
     width: 200px;
     margin: 0 1rem;
@@ -49,21 +66,41 @@
 }
 
 :host ::ng-deep .chat-header .mat-mdc-text-field-wrapper {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding: 0 12px;
 }
 
 :host ::ng-deep .chat-header .mat-mdc-form-field-subscript-wrapper {
     display: none;
 }
 
+/* Menu button styling */
+.chat-header button[mat-icon-button] {
+    color: #ffffff;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.chat-header button[mat-icon-button]:hover {
+    opacity: 1;
+}
 
 /* Style for the select dropdown panel */
 ::ng-deep .dense-select-panel {
-    font-size: 14px !important;
+    background-color: #2d2d2d;
+    border-radius: 4px;
+    margin-top: 4px;
 }
 
 ::ng-deep .dense-select-panel .mat-mdc-option {
     min-height: 35px !important;
     padding: 8px 16px;
+    color: #ffffff;
+}
+
+::ng-deep .dense-select-panel .mat-mdc-option:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+::ng-deep .dense-select-panel .mat-mdc-option.mat-mdc-selected {
+    background-color: rgba(255, 255, 255, 0.15);
 }
