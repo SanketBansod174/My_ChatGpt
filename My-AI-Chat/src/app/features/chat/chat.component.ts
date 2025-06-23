@@ -121,18 +121,6 @@ export class ChatComponent implements AfterViewChecked {
     localStorage.setItem('chat_history', JSON.stringify(this.messages));
   }
 
-  clearChat() {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: { message: 'Do you really want to clear all messages?' },
-      width: '300px'
-    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.chatService.clearMessages();
-        this.messages = this.chatService.getMessages();
-      }
-    });
-  }
 
 }

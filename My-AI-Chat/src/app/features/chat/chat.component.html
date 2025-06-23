@@ -1,12 +1,14 @@
 <div class="chat-container">
   <div class="chat-messages" #chatContainer>
-    <mat-card *ngFor="let msg of messages" [ngClass]="msg.sender" class="message-card">
+    @for (msg of messages; track $index) {
+    <mat-card [ngClass]="msg.sender" class="message-card">
       <mat-card-content>
         <div class="message-content" [innerHTML]="msg.text | markdown"></div>
       </mat-card-content>
     </mat-card>
     <mat-progress-spinner *ngIf="isLoading" class="loading-indicator" mode="indeterminate" diameter="32">
     </mat-progress-spinner>
+    }
   </div>
   <mat-divider></mat-divider>
   <form class="chat-input" (submit)="sendMessage()">

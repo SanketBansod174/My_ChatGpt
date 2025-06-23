@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, Input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, Input, output, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSelectModule } from '@angular/material/select';
@@ -35,8 +35,7 @@ export class ToolbarComponent {
   messages: { sender: 'user' | 'ai', text: string }[] = [];
 
   @Output() selectedModelChange = new EventEmitter<string>();
-  @Output() clearChatClick = new EventEmitter<void>();
-
+  clearChatClick = output();
 
   constructor(
     private chatService: ChatService,
@@ -63,7 +62,17 @@ export class ToolbarComponent {
   }
 
   clearChat() {
-    this.clearChatClick.emit();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: 'Do you really want to clear all messages?' },
+      width: '300px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.chatService.clearMessages();
+        this.messages = this.chatService.getMessages();
+      }
+    });
   }
 }
 
