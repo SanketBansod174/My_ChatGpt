@@ -1,10 +1,14 @@
-import { Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal, Signal } from '@angular/core';
+import { ChatService } from './chat.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OllamaService {
   private isInsideThink = false;
+  private sharedService = inject(ChatService);
+  private selectedModel = computed(() => this.sharedService.selectedModelId());
+
 
   constructor() { }
 
@@ -31,7 +35,7 @@ export class OllamaService {
   }
 
   async streamChatResponse(
-    model: string,
+    model: string = this.selectedModel(),
     chatHistory: { role: string; content: string }[],
     onChunk: (visibleToken: string) => void
   ): Promise<void> {

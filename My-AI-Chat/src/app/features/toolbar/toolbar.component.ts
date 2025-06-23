@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,7 +31,7 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
 })
 export class ToolbarComponent {
   @Input() selectedModel: string = '';
-  @Input() availableModels: any[] = [];
+  @Input() availableModels?: any[];
   messages: { sender: 'user' | 'ai', text: string }[] = [];
 
   @Output() selectedModelChange = new EventEmitter<string>();
@@ -42,19 +42,11 @@ export class ToolbarComponent {
     private chatService: ChatService,
     private ollamaService: OllamaService,
     private dialog: MatDialog
-  ) { }
-
-  ngOnInit() {
-    this.messages = this.chatService.getMessages();
-    this.SubScribeToModels();
-    //    this.selectedModel = this.availableModels[0]?.id || '';
-    // Uncomment the line below if you want to set the selected model from the chat service
-    //this.chatService.getSelectedModel();
-  }
-
-  SubScribeToModels() {
-    this.chatService.getModels().subscribe(models => {
+  ) {
+    effect(() => {
+      const models = this.chatService.getModels();
       this.availableModels = models;
+      // Set initial model if not already set
       if (models.length > 0 && !this.selectedModel) {
         this.selectedModel = models[0]?.id || '';
         this.changeModel();
@@ -62,11 +54,16 @@ export class ToolbarComponent {
     });
   }
 
+  ngOnInit() {
+    this.messages = this.chatService.getMessages();
+  }
+
   changeModel() {
-    this.selectedModelChange.emit(this.selectedModel);
+    this.chatService.setModel(this.selectedModel);
   }
 
   clearChat() {
     this.clearChatClick.emit();
   }
 }
+
